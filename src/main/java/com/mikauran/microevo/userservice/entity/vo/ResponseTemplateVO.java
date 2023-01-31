@@ -1,6 +1,6 @@
 package com.mikauran.microevo.userservice.entity.vo;
 
-import com.mikauran.microevo.userservice.entity.User;
+import com.mikauran.microevo.userservice.entity.UserMicro;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResponseTemplateVO {
 
-    private User user;
+    private UserMicro user;
     private Department department;
 }

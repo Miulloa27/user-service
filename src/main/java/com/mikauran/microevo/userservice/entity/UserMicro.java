@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class UserMicro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
