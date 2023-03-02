@@ -5,11 +5,84 @@ spring:
   application:
     name: USER-SERVICE
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    hostname: localhost
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+#  instance:
+#    hostname: localhost
+
+
+influx:
+  url: http://localhost:8086/ # URL to connect to InfluxDB.
+  username: admin # Username to use in the basic auth.
+  password: admin # Password to use in the basic auth.
+  token: BqXiAk5gjWqOdT95grpivTEW5_Lu08wWFUPXfVQAWYsqI4KIoYPcMXJr0cEAV__WJXpyF-6Au7LBA1BJFD_a7g== # Token to use for the authorization.
+  org: mikauran # Default destination organization for writes and queries.
+  bucket: uran1 # Default destination bucket for writes.
+  logLevel: BODY # The log level for logging the HTTP request and HTTP response. (Default: NONE)
+  readTimeout: 5s # Read timeout for OkHttpClient. (Default: 10s)
+  writeTimeout: 5s # Write timeout for OkHttpClient. (Default: 10s)
+  connectTimeout: 5s # Connection timeout for OkHttpClient. (Default: 10s)
+
+management:
+  metrics:
+    export:
+      influx:
+        bucket: uran1
+        org: mikauran
+        token: BqXiAk5gjWqOdT95grpivTEW5_Lu08wWFUPXfVQAWYsqI4KIoYPcMXJr0cEAV__WJXpyF-6Au7LBA1BJFD_a7g==
+        uri: http://127.0.0.1:8086
+        enabled: true
+        db: mydb
+      endpoints:
+        web:
+         expose: "*"
+
+  health:
+    circuit-breakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+  resilience4j:
+    circuit breaker:
+      configs:
+        shared:
+          register-health-indicator: true
+          sliding-window-type: count_based
+          sliding-window-size: 5
+          failure-rate-threshold: 40
+          slow-call-rate-threshold: 40
+          permitted-number-of-calls-in-half-open-state: 1
+          max-wait-duration-in-half-open-state: 10s
+          wait-duration-in-open-state: 10s
+          slow-call-duration-threshold: 2s
+          writable-stack-trace-enabled: true
+          automatic-transition-from-open-to-half-open-enabled: true
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+      instances:
+          User-Service:
+            base-config: shared
+
+  retry:
+    instances:
+      User-Service:
+        registerHealthIndicator: true
+        maxRetryAttempts: 5
+        waitDuration: 10s
+
+
+
+
+

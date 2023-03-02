@@ -15,6 +15,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    public static final String USER_SERVICE = "User-Service";
+
+
     @PostMapping("/")
     public UserMicro saveUser(@RequestBody UserMicro user) {
         log.info("Inside saveUser of UserController");
@@ -23,9 +26,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseTemplateVO getUserWithDepartment(@PathVariable("id") Long userId) {
-        log.info("Inside getUserWithDepartment of UserController");
+        log.info(">>>>>>>>>> INSIDE getUserWithDepartment of UserController <<<<<<<<<<<<<");
         return userService.getUserWithDepartment(userId);
     }
-
 
 }
